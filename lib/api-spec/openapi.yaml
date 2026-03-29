@@ -1,0 +1,557 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Indiana Choice Scholarship Program Annual Report API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: report
+    description: Report content operations
+  - name: admin
+    description: Admin management operations
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/user:
+    get:
+      operationId: getCurrentAuthUser
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current auth state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetCurrentAuthUserResponse"
+
+  /report/sections:
+    get:
+      operationId: getReportSections
+      tags: [report]
+      summary: Get all report sections
+      responses:
+        "200":
+          description: List of report sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReportSection"
+
+  /report/sections/{key}:
+    get:
+      operationId: getReportSection
+      tags: [report]
+      summary: Get a report section by key
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Report section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportSection"
+        "404":
+          description: Not found
+
+  /report/tables:
+    get:
+      operationId: getReportTables
+      tags: [report]
+      summary: Get all report tables
+      responses:
+        "200":
+          description: List of report tables
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReportTable"
+
+  /report/tables/{key}:
+    get:
+      operationId: getReportTable
+      tags: [report]
+      summary: Get a report table by key
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Report table
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportTable"
+        "404":
+          description: Not found
+
+  /report/stats:
+    get:
+      operationId: getReportStats
+      tags: [report]
+      summary: Get all key statistics
+      responses:
+        "200":
+          description: List of statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReportStat"
+
+  /report/metadata:
+    get:
+      operationId: getReportMetadata
+      tags: [report]
+      summary: Get report metadata (title, year, description)
+      responses:
+        "200":
+          description: Report metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportMetadata"
+
+  /admin/sections/{id}:
+    put:
+      operationId: updateReportSection
+      tags: [admin]
+      summary: Update a report section
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReportSectionBody"
+      responses:
+        "200":
+          description: Updated section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportSection"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+  /admin/tables/{id}:
+    put:
+      operationId: updateReportTable
+      tags: [admin]
+      summary: Update a report table
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReportTableBody"
+      responses:
+        "200":
+          description: Updated table
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportTable"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+  /admin/stats/{id}:
+    put:
+      operationId: updateReportStat
+      tags: [admin]
+      summary: Update a report statistic
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReportStatBody"
+      responses:
+        "200":
+          description: Updated stat
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportStat"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+  /admin/metadata:
+    put:
+      operationId: updateReportMetadata
+      tags: [admin]
+      summary: Update report metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReportMetadataBody"
+      responses:
+        "200":
+          description: Updated metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportMetadata"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+  /admin/users:
+    get:
+      operationId: getAdminUsers
+      tags: [admin]
+      summary: List all admin users
+      responses:
+        "200":
+          description: List of admin users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUser"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+    post:
+      operationId: addAdminUser
+      tags: [admin]
+      summary: Add a new admin user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddAdminUserBody"
+      responses:
+        "201":
+          description: Created admin user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUser"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+  /admin/users/{id}:
+    delete:
+      operationId: removeAdminUser
+      tags: [admin]
+      summary: Remove an admin user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    GetCurrentAuthUserResponse:
+      type: object
+      properties:
+        isAuthenticated:
+          type: boolean
+        user:
+          $ref: "#/components/schemas/AuthUser"
+      required: [isAuthenticated]
+
+    AuthUser:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        profileImage:
+          type: string
+        isAdmin:
+          type: boolean
+      required: [id, isAdmin]
+
+    ReportSection:
+      type: object
+      properties:
+        id:
+          type: integer
+        key:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        sectionOrder:
+          type: integer
+        parentKey:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, key, title, content, sectionOrder]
+
+    ReportTable:
+      type: object
+      properties:
+        id:
+          type: integer
+        key:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        headers:
+          type: array
+          items:
+            type: string
+        rows:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+        footnote:
+          type: string
+        sectionKey:
+          type: string
+        tableOrder:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, key, title, headers, rows, sectionKey, tableOrder]
+
+    ReportStat:
+      type: object
+      properties:
+        id:
+          type: integer
+        key:
+          type: string
+        label:
+          type: string
+        value:
+          type: string
+        description:
+          type: string
+        sectionKey:
+          type: string
+        statOrder:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, key, label, value, sectionKey, statOrder]
+
+    ReportMetadata:
+      type: object
+      properties:
+        id:
+          type: integer
+        reportTitle:
+          type: string
+        reportYear:
+          type: string
+        reportDescription:
+          type: string
+        publishedDate:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, reportTitle, reportYear]
+
+    AdminUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        replitUserId:
+          type: string
+        username:
+          type: string
+        addedAt:
+          type: string
+          format: date-time
+      required: [id, replitUserId, username, addedAt]
+
+    UpdateReportSectionBody:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+      required: [title, content]
+
+    UpdateReportTableBody:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        headers:
+          type: array
+          items:
+            type: string
+        rows:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+        footnote:
+          type: string
+      required: [title, headers, rows]
+
+    UpdateReportStatBody:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+        description:
+          type: string
+      required: [label, value]
+
+    UpdateReportMetadataBody:
+      type: object
+      properties:
+        reportTitle:
+          type: string
+        reportYear:
+          type: string
+        reportDescription:
+          type: string
+        publishedDate:
+          type: string
+      required: [reportTitle, reportYear]
+
+    AddAdminUserBody:
+      type: object
+      properties:
+        replitUserId:
+          type: string
+        username:
+          type: string
+      required: [replitUserId, username]
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required: [success]
+
+    ExchangeMobileAuthorizationCodeBody:
+      type: object
+      properties:
+        code:
+          type: string
+        code_verifier:
+          type: string
+        redirect_uri:
+          type: string
+        state:
+          type: string
+        nonce:
+          type: string
+      required: [code, code_verifier, redirect_uri, state]
+
+    ExchangeMobileAuthorizationCodeResponse:
+      type: object
+      properties:
+        token:
+          type: string
+      required: [token]
+
+    LogoutMobileSessionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required: [success]

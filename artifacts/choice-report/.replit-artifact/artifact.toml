@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Indiana Annual Choice Report"
+version = "1.0.0"
+id = "artifacts/choice-report"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19220
+
+[services.development]
+run = "pnpm --filter @workspace/choice-report run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/choice-report", "run", "build" ]
+publicDir = "artifacts/choice-report/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19220"
+BASE_PATH = "/"

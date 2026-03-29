@@ -1,0 +1,15 @@
+packages:
+  "framer-motion": "For smooth page transitions and interactive elements"
+  "react-hook-form": "For robust admin form handling"
+  "@hookform/resolvers": "For Zod validation integration"
+  "zod": "For form validation schemas"
+  "date-fns": "For formatting dates"
+
+images:
+  - path: "artifacts/choice-report/public/images/indiana-seal.png"
+    description: "A clean, modern, simplified, monochromatic gold state seal or government crest logo on a transparent background."
+    aspect_ratio: "1:1"
+
+notes:
+  - "Using generated @workspace/api-client-react hooks for all API calls."
+  - "Admin portal uses simple string parsing (pipe separated) to allow editing 2D table arrays via textarea."
